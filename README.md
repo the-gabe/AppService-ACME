@@ -59,3 +59,8 @@ This will do 2 things:
 - Prevent malicious actors from abusing Let's Encrypt using techniques such as BGP and DNS zone hijacking, from issuing certificates, as you have a CAA record pinning the account ID, and the credentials for this account are in your Azure KeyVault
 
 It is strongly reccomended to also deploy DNSSEC, as this will further improve resilience of DNS queries performed by the CA when doing ACME challenges, irrespective of challenge type.
+
+
+# Ideas
+
+- Consider potentially implementing this using Azure Automation and Azure Static Websites served from Blob Storage instead?
