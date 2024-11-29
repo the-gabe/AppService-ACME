@@ -22,6 +22,7 @@ A very simple way to do ACME in Azure, using Let's Encrypt.
 - Does not expose any user maintained web server, instead relies on Azure Blob Storage Static Websites
 - Runs cheap as chips, you pay mere cents per month to Microsoft for running this
 - Fully uses Azure Managed Identity - no manual credential management. ever.
+- Very easy to audit. Why should you trust me? Trust yourself instead.
 - Minimal maintenance overall
 - No BS. If this has even a hint of BS anywhere, it is a bug. File an issue.
 
