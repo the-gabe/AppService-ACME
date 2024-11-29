@@ -6,7 +6,7 @@ A very simple way to do ACME in Azure, using Let's Encrypt.
 
 ![Architectural Diagram](diagram.png)
 
-# Features:
+# Features
 
 - Strong keysizes for issued certificates (RSA 4096, SECP384r1)
 - HTTP-01 challenges
@@ -25,21 +25,22 @@ A very simple way to do ACME in Azure, using Let's Encrypt.
 - Minimal maintenance overall
 - No BS. If this has even a hint of BS anywhere, it is a bug. File an issue.
 
-# DNS configuration:
+# DNS configuration of CAA records to significantly improve ACME security
 
 In order to significantly improve overall ACME assurance, you must configure a CAA record for your DNS zone. This is a "set it and forget it task". One of very few such tasks in the IT industry.
 
-For example, for my hostname I wish to issue certificates for, thisis.ademo.webpage, I could assign a CAA record to either ademo.webpage, which would impact the entire apex DNS zone and all children, or I could just do it for thisis.ademo.webpage.
+For example, for my hostname I wish to issue certificates for, subdomain.domain.tld, I could assign a CAA record to either domain.tld, which would impact the entire apex DNS zone and all children, or I could just do it for subdomain.domain.tld.
 
-Here is what the DNS record would look like:
+Here is what the DNS record would look like in BIND format:
 
-```thisis.ademo.webpage.         3600    IN      CAA     0 issue "letsencrypt.org; validationmethods=http-01; accounturi=https://acme-v02.api.letsencrypt.org/acme/acct/YOUR_ACCOUNT_ID_FROM_KEYVAULT"```
+```subdomain.domain.tld. 3600 IN CAA 0 issue "letsencrypt.org; validationmethods=http-01; accounturi=https://acme-v02.api.letsencrypt.org/acme/acct/1337"```
 
-Note, you would replace the contents of YOUR_ACCOUNT_ID_FROM_KEYVAULT in the above DNS record, with that of what is stored in Azure KeyVault, as part of ACME account credentials.
+Note, you would replace the "1337" in the above DNS record, with that of the account ID (not account key) which is stored in Azure KeyVault.
 
-This will do 2 things:
+This will do 3 things:
 
 - Prevent other CAs other than Let's Encrypt from issuing TLS certificates for this DNS zone
+- Prevent other ACME challenges other than HTTP-01 validation
 - Prevent malicious actors from abusing Let's Encrypt using techniques such as BGP and DNS zone hijacking, from issuing certificates, as you have a CAA record pinning the account ID, and the credentials for this account are in your Azure KeyVault
 
-It is strongly reccomended to also deploy DNSSEC, as this will further improve resilience of DNS queries performed by the CA when doing ACME challenges, irrespective of challenge type.
+It is strongly reccomended to also deploy DNSSEC, as this will further improve resilience of DNS queries performed by the CA when doing ACME challenges, irrespective of challenge type. Though, the CA/Browser forum doesn't currently mandate this for CA's.
